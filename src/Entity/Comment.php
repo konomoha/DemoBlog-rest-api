@@ -9,24 +9,38 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ApiResource(
-    normalizationContext:['groups'=>['read']],
-    denormalizationContext:['groups'=>['write']]
+    normalizationContext:["groups"=>["comment:read"]],
+    denormalizationContext:["groups"=>["comment:write"]]
 )]
 class Comment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups("read")]
+    #[Groups(["comment:read", "article:read"])]
+
     private $id;
 
     #[ORM\Column(type: 'text')]
-    #[Groups(["read", "write"])]
+    #[Groups(["comment:read", "comment:write", "article:read"])]
+
     private $content;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups("read")]
+    #[Groups("comment:read")]
+
     private $createdAt;
+
+    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups("comment:write")]
+
+    private $article;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -53,6 +67,18 @@ class Comment
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getArticle(): ?Article
+    {
+        return $this->article;
+    }
+
+    public function setArticle(?Article $article): self
+    {
+        $this->article = $article;
 
         return $this;
     }
