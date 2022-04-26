@@ -63,6 +63,8 @@ class ArticleDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = [])
     {
+        $tagentity="";
+
         // Update the slug only if the article isn't published
         if (!$data->getIsPublished()) {
             $data->setSlug(
@@ -83,9 +85,14 @@ class ArticleDataPersister implements ContextAwareDataPersisterInterface
             
             // if the tag exists, don't persist it
             if ($t !== null) {
-                $data->removeTag($tag);
-                $data->addTag($t);
-            } else {
+
+                foreach($t as $key){
+                    $data->removeTag($tag);
+                    $data->addTag($key); 
+                }
+                 
+            } 
+            else {
                 $this->_entityManager->persist($tag);
             }
         }
