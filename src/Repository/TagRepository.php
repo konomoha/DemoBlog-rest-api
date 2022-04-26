@@ -47,9 +47,9 @@ class TagRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-    * @return Tag|null
-    */
+    // /**
+    // * @return Tag
+    // */
 
     // public function findOneByLabel($label)
     // {
@@ -63,7 +63,7 @@ class TagRepository extends ServiceEntityRepository
     
     public function findOneByLabel($label)
     {
-        $this->createQueryBuilder(alias:'t')
+        return $this->createQueryBuilder(alias:'t')
                     ->where('t.label = :label')
                     ->setParameter('label', $label)
                     ->getQuery()
